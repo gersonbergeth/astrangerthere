@@ -139,12 +139,43 @@ import MainLayout from "../layouts/MainLayout.astro";
 
 @media (max-width: 768px) {
 
+    .hero-content{
+        position:relative;
+        height:100%;
+        padding:0;
+    }
+
+    .hero-menu{
+        position:absolute;
+        top:5vh;
+        right:8%;
+        left:auto;
+        margin:0;
+        text-align:right;
+        align-items:flex-end;
+        gap:.25rem;
+    }
+
+    .hero-menu a{
+        font-size:.95rem;
+    }
+
+    .hero-content h1{
+        position:absolute;
+        top:35%;
+        left:8%;
+        margin:0;
+        font-size:2.4rem;
+    }
+
     .typewriter{
-        top: 65%;
-        left: 8%;
-        right: 8%;
-        width: auto;
-        font-size: 0.95rem;
+        position:absolute;
+        top:62%;
+        left:8%;
+        right:8%;
+        width:auto;
+        font-size:.9rem;
+        line-height:1.5;
     }
 
 }
