@@ -14,9 +14,7 @@ import MainLayout from "../layouts/MainLayout.astro";
 
     <div class="hero-content">
 
-        <h1>
-			A Stranger There
-		</h1>
+        <h1>A Stranger There</h1>
 
         <nav class="hero-menu">
             <a href="/photo">Photo</a>
@@ -114,15 +112,15 @@ import MainLayout from "../layouts/MainLayout.astro";
     font-weight:300;
 }
 
-.typewriter{
-    position:absolute;
-    right:8%;
-    top:25%;
-    width:min(500px,40%);
-    color:white;
-    font-family:"Courier New", monospace;
-    font-size:1.1rem;
-    line-height:1.7;
+.typewriter {
+  position: absolute;
+  top: 25%;
+  right: 8%;
+  width: min(500px, 40%);
+  color: white;
+  font-family: "Courier New", monospace;
+  font-size: 1.1rem;
+  line-height: 1.7;
 }
 
 .typewriter p{
@@ -140,48 +138,39 @@ import MainLayout from "../layouts/MainLayout.astro";
 }
 
 @media (max-width: 768px) {
+  .hero-content {
+    position: relative;
+    height: 100%;
+    padding: 0;
+  }
 
-    .hero-content{
-        position:relative;
-        height:100%;
-        padding:0;
-    }
+  .hero-menu {
+    position: absolute;
+    top: 5vh;
+    right: 8%;
+    align-items: flex-end;
+    text-align: right;
+    margin: 0;
+  }
 
-    .hero-menu{
-        position:absolute;
-        top:5vh;
-        right:8%;
-        left:auto;
-        margin:0;
-        text-align:right;
-        align-items:flex-end;
-        gap:.25rem;
-    }
+  .hero-content h1 {
+    position: absolute;
+    top: 36%;
+    left: 8%;
+    right: 8%;
+    margin: 0;
+    font-size: 2.4rem;
+    text-align: left;
+  }
 
-    .hero-menu a{
-        font-size:.95rem;
-    }
-
-    .hero-content h1 span{
-    display:block;
-	}
-        position:absolute;
-        top:35%;
-        left:8%;
-        margin:0;
-        font-size:2.4rem;
-    }
-
-    .typewriter{
-        position:absolute;
-        top:62%;
-        left:8%;
-        right:8%;
-        width:auto;
-        font-size:.9rem;
-        line-height:1.5;
-    }
-
+  .typewriter {
+    top: 62%;
+    left: 8%;
+    right: 8%;
+    width: auto;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
 }
 
 </style>
