@@ -1,0 +1,418 @@
+---
+import MainLayout from "../../layouts/MainLayout.astro";
+
+const poemFiles = import.meta.glob(
+  "../../content/poems/*.md",
+  {
+    eager: true,
+    query: "?raw",
+    import: "default",
+  }
+);
+
+function parsePoem(path, rawText) {
+  const frontmatterMatch = rawText.match(/^---\s*([\s\S]*?)\s*---\s*([\s\S]*)$/);
+
+  if (!frontmatterMatch) {
+    return null;
+  }
+
+  const metadata = {};
+
+  frontmatterMatch[1].split("\n").forEach((line) => {
+    const separator = line.indexOf(":");
+
+    if (separator === -1) return;
+
+    const key = line.slice(0, separator).trim();
+    const value = line
+      .slice(separator + 1)
+      .trim()
+      .replace(/^["']|["']$/g, "");
+
+    metadata[key] = value;
+  });
+
+  if (metadata.published === "false") {
+    return null;
+  }
+
+  return {
+    id: path.split("/").pop().replace(".md", ""),
+    title: metadata.title ?? "Untitled",
+    author: metadata.author ?? "",
+    date: metadata.date ?? "",
+    location: metadata.location ?? "",
+    body: frontmatterMatch[2].trim(),
+  };
+}
+
+const poems = Object.entries(poemFiles)
+  .map(([path, rawText]) => parsePoem(path, rawText))
+  .filter(Boolean);
+---
+
+<MainLayout title="Words">
+  <main class="words-page">
+
+    <section id="word-field" class="word-field">
+      <a href="/" class="circle home-circle" aria-label="Return home"></a>
+      <div id="word-grid" class="word-grid"></div>
+    </section>
+
+    <section id="poem-view" class="poem-view" aria-hidden="true">
+      <nav class="poem-navigation">
+        <button
+          id="return-to-words"
+          class="circle"
+          type="button"
+          aria-label="Return to scattered words"
+        ></button>
+
+        <a href="/" class="circle" aria-label="Return home"></a>
+      </nav>
+
+      <article class="poem">
+        <h1 id="poem-title"></h1>
+        <p id="poem-meta" class="poem-meta"></p>
+        <div id="poem-body" class="poem-body"></div>
+      </article>
+    </section>
+
+    <script
+      id="poem-data"
+      type="application/json"
+      set:html={JSON.stringify(poems)}
+    ></script>
+
+  </main>
+</MainLayout>
+
+<style>
+  :global(html),
+  :global(body) {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #000;
+  }
+
+  .words-page {
+    position: relative;
+    width: 100%;
+    height: 100svh;
+    overflow: hidden;
+    background: #000;
+    color: white;
+  }
+
+  .word-field,
+  .poem-view {
+    position: absolute;
+    inset: 0;
+  }
+
+  .word-grid {
+    display: grid;
+    grid-template-columns: repeat(11, minmax(0, 1fr));
+    grid-template-rows: repeat(11, minmax(0, 1fr));
+    width: 100%;
+    height: 100%;
+    padding: 4rem;
+    box-sizing: border-box;
+  }
+
+  :global(.scattered-word) {
+    display: grid;
+    place-items: center;
+    min-width: 0;
+    padding: 0.2rem;
+    overflow: hidden;
+    border: 0;
+    color: white;
+    background: transparent;
+    font-family: "Courier New", monospace;
+    font-size: clamp(0.65rem, 0.85vw, 1rem);
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .circle {
+    display: block;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: white;
+    cursor: pointer;
+  }
+
+  .home-circle {
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    z-index: 20;
+  }
+
+  .poem-view {
+    display: none;
+    overflow: hidden;
+    background: #000;
+  }
+
+  .poem-view.visible {
+    display: grid;
+    place-items: center;
+  }
+
+  .poem-navigation {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    z-index: 20;
+    display: flex;
+    gap: 0.75rem;
+  }
+
+.poem {
+    width: min(680px, calc(100% - 4rem));
+    max-height: calc(100svh - 8rem);
+    overflow-y: auto;
+    font-family: "Courier New", monospace;
+
+    /* Firefox */
+    scrollbar-width: none;
+
+    /* Internet Explorer */
+    -ms-overflow-style: none;
+}
+
+/* Chrome, Edge & Safari */
+.poem::-webkit-scrollbar {
+    display: none;
+}
+
+  .poem h1 {
+    margin: 0 0 0.75rem;
+    font-size: clamp(1.8rem, 4vw, 3.5rem);
+    font-weight: 400;
+  }
+
+  .poem-meta {
+    margin: 0 0 2rem;
+    font-size: 0.8rem;
+    opacity: 0.65;
+  }
+
+  .poem-body {
+    white-space: pre-wrap;
+    font-size: clamp(1rem, 1.4vw, 1.25rem);
+    line-height: 1.75;
+  }
+
+  @media (max-width: 768px) {
+    .word-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-rows: repeat(13, minmax(0, 1fr));
+      padding: 4rem 1rem 1rem;
+    }
+
+    :global(.scattered-word) {
+      font-size: clamp(0.62rem, 2.7vw, 0.9rem);
+    }
+
+    .home-circle,
+    .poem-navigation {
+      top: 1.5rem;
+      right: 1.5rem;
+    }
+
+    .circle {
+      width: 18px;
+      height: 18px;
+    }
+
+    .poem {
+      width: calc(100% - 3rem);
+      max-height: calc(100svh - 7rem);
+    }
+  }
+</style>
+
+<script>
+  const dataElement = document.getElementById("poem-data");
+  const poems = dataElement?.textContent
+    ? JSON.parse(dataElement.textContent)
+    : [];
+
+  const wordField = document.getElementById("word-field");
+  const wordGrid = document.getElementById("word-grid");
+  const poemView = document.getElementById("poem-view");
+  const poemTitle = document.getElementById("poem-title");
+  const poemMeta = document.getElementById("poem-meta");
+  const poemBody = document.getElementById("poem-body");
+  const returnButton = document.getElementById("return-to-words");
+
+  const normalizeWord = (word) =>
+    word
+      .toLocaleLowerCase()
+      .replace(/[^\p{L}\p{N}'’-]/gu, "");
+
+  const tokenize = (text) =>
+    text
+      .split(/\s+/)
+      .map((word) => word.trim())
+      .filter(Boolean);
+
+  const shuffle = (items) => {
+    const result = [...items];
+
+    for (let index = result.length - 1; index > 0; index -= 1) {
+      const randomIndex = Math.floor(Math.random() * (index + 1));
+
+      [result[index], result[randomIndex]] = [
+        result[randomIndex],
+        result[index],
+      ];
+    }
+
+    return result;
+  };
+
+  const getUsedPoems = () => {
+    try {
+      return JSON.parse(
+        sessionStorage.getItem("used-poem-cycle") ?? "[]"
+      );
+    } catch {
+      return [];
+    }
+  };
+
+  const saveUsedPoems = (ids) => {
+    sessionStorage.setItem("used-poem-cycle", JSON.stringify(ids));
+  };
+
+  const choosePoem = (clickedWord) => {
+    const normalized = normalizeWord(clickedWord);
+    let used = getUsedPoems();
+
+    if (used.length >= poems.length) {
+      used = [];
+      saveUsedPoems([]);
+    }
+
+    let matchingPoems = poems.filter(
+      (poem) =>
+        !used.includes(poem.id) &&
+        tokenize(poem.body).some(
+          (word) => normalizeWord(word) === normalized
+        )
+    );
+
+    if (matchingPoems.length === 0 && used.length >= poems.length) {
+      used = [];
+      saveUsedPoems([]);
+
+      matchingPoems = poems.filter((poem) =>
+        tokenize(poem.body).some(
+          (word) => normalizeWord(word) === normalized
+        )
+      );
+    }
+
+    if (matchingPoems.length === 0) {
+      return null;
+    }
+
+    const selected =
+      matchingPoems[Math.floor(Math.random() * matchingPoems.length)];
+
+    saveUsedPoems([...used, selected.id]);
+
+    return selected;
+  };
+
+  const showPoem = (poem) => {
+    if (
+      !wordField ||
+      !poemView ||
+      !poemTitle ||
+      !poemMeta ||
+      !poemBody
+    ) {
+      return;
+    }
+
+    poemTitle.textContent = poem.title;
+
+    poemMeta.textContent = [
+      poem.author,
+      poem.location,
+      poem.date,
+    ]
+      .filter(Boolean)
+      .join(" · ");
+
+    poemBody.textContent = poem.body;
+
+    wordField.style.display = "none";
+    poemView.classList.add("visible");
+    poemView.setAttribute("aria-hidden", "false");
+  };
+
+  const createWordField = () => {
+    if (!wordGrid || poems.length === 0) return;
+
+    const isMobile = window.matchMedia(
+      "(max-width: 768px)"
+    ).matches;
+
+    const maximumWords = isMobile ? 39 : 121;
+    const perPoemLimit = isMobile ? 12 : 35;
+
+    const pool = poems.flatMap((poem) =>
+      shuffle(tokenize(poem.body))
+        .slice(0, perPoemLimit)
+        .map((word) => ({
+          word,
+          poemId: poem.id,
+        }))
+    );
+
+    const selectedWords = shuffle(pool).slice(0, maximumWords);
+
+    wordGrid.replaceChildren();
+
+    selectedWords.forEach(({ word }) => {
+      const button = document.createElement("button");
+
+      button.type = "button";
+      button.className = "scattered-word";
+      button.textContent = word;
+
+      button.addEventListener("click", () => {
+        const selectedPoem = choosePoem(word);
+
+        if (selectedPoem) {
+          showPoem(selectedPoem);
+        }
+      });
+
+      wordGrid.appendChild(button);
+    });
+  };
+
+  returnButton?.addEventListener("click", () => {
+    poemView?.classList.remove("visible");
+    poemView?.setAttribute("aria-hidden", "true");
+
+    if (wordField) {
+      wordField.style.display = "block";
+    }
+  });
+
+  createWordField();
+</script>

@@ -1,0 +1,290 @@
+---
+import MainLayout from "../../layouts/MainLayout.astro";
+
+const artworks = [
+  {
+    id: "art-001",
+    src: "/images/art/Art_001.jpg",
+    title: "Art 001",
+    summary: "Summary for Art 001.",
+  },
+  {
+    id: "art-002",
+    src: "/images/art/Art_002.jpg",
+    title: "Art 002",
+    summary: "Summary for Art 002.",
+  },
+  {
+    id: "art-003",
+    src: "/images/art/Art_003.jpg",
+    title: "Art 003",
+    summary: "Summary for Art 003.",
+  },
+  {
+    id: "art-004",
+    src: "/images/art/Art_004.jpg",
+    title: "Art 004",
+    summary: "Summary for Art 004.",
+  },
+  {
+    id: "art-005",
+    src: "/images/art/Art_005.jpg",
+    title: "Art 005",
+    summary: "Summary for Art 005.",
+  },
+  {
+    id: "art-006",
+    src: "/images/art/Art_006.jpg",
+    title: "Art 006",
+    summary: "Summary for Art 006.",
+  },
+  {
+    id: "art-007",
+    src: "/images/art/Art_007.jpg",
+    title: "Art 007",
+    summary: "Summary for Art 007.",
+  },
+];
+---
+
+<MainLayout title="Art">
+  <main class="art-page">
+
+    <a href="/" class="circle home-circle" aria-label="Return home"></a>
+
+    <section id="art-field" class="art-field">
+      {
+        artworks.map((artwork) => (
+          <button
+            class="art-window"
+            type="button"
+            data-src={artwork.src}
+            data-title={artwork.title}
+            data-summary={artwork.summary}
+            aria-label={`Open ${artwork.title}`}
+          >
+            <img src={artwork.src} alt={artwork.title} loading="lazy" />
+          </button>
+        ))
+      }
+    </section>
+
+    <section id="art-viewer" class="art-viewer" aria-hidden="true">
+      <img id="art-full-image" class="art-full-image" src="" alt="" />
+
+      <nav class="viewer-navigation">
+        <button
+          id="return-to-art"
+          class="circle"
+          type="button"
+          aria-label="Return to art overview"
+        ></button>
+
+        <a href="/" class="circle" aria-label="Return home"></a>
+      </nav>
+
+      <div class="art-summary">
+        <h1 id="art-title"></h1>
+        <p id="art-description"></p>
+      </div>
+    </section>
+
+  </main>
+</MainLayout>
+
+<style>
+  :global(html),
+  :global(body) {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #000;
+  }
+
+  .art-page {
+    position: relative;
+    width: 100%;
+    height: 100svh;
+    overflow: hidden;
+    background: #000;
+  }
+
+  .art-field {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  .art-window {
+    position: absolute;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+    background: #111;
+    cursor: pointer;
+  }
+
+  .art-window img {
+    width: 280%;
+    height: 280%;
+    display: block;
+    object-fit: cover;
+    transform: translate(
+      calc(var(--crop-x) * -1%),
+      calc(var(--crop-y) * -1%)
+    );
+  }
+
+  .circle {
+    width: 20px;
+    height: 20px;
+    display: block;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: white;
+    cursor: pointer;
+  }
+
+  .home-circle {
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    z-index: 50;
+  }
+
+  .art-viewer {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: none;
+    background: #000;
+  }
+
+  .art-viewer.visible {
+    display: block;
+  }
+
+  .art-full-image {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+  }
+
+  .viewer-navigation {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    z-index: 120;
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  .art-summary {
+    position: absolute;
+    left: 2rem;
+    right: 2rem;
+    bottom: 2rem;
+    z-index: 110;
+    max-width: 680px;
+    padding: 1rem 1.25rem;
+    color: white;
+    background: rgb(0 0 0 / 65%);
+    font-family: "Courier New", monospace;
+  }
+
+  .art-summary h1 {
+    margin: 0 0 0.5rem;
+    font-size: 1.25rem;
+    font-weight: 400;
+  }
+
+  .art-summary p {
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 768px) {
+    .home-circle,
+    .viewer-navigation {
+      top: 1.5rem;
+      right: 1.5rem;
+    }
+
+    .circle {
+      width: 18px;
+      height: 18px;
+    }
+
+    .art-summary {
+      left: 1.5rem;
+      right: 1.5rem;
+      bottom: 1.5rem;
+    }
+  }
+</style>
+
+<script>
+  const windows = document.querySelectorAll(".art-window");
+  const viewer = document.getElementById("art-viewer");
+  const fullImage = document.getElementById("art-full-image");
+  const title = document.getElementById("art-title");
+  const description = document.getElementById("art-description");
+  const returnButton = document.getElementById("return-to-art");
+
+  const randomBetween = (min, max) =>
+    Math.floor(Math.random() * (max - min + 1)) + min;
+
+  const placeWindows = () => {
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
+
+    windows.forEach((windowElement, index) => {
+      const size = isMobile
+        ? randomBetween(70, 120)
+        : randomBetween(110, 220);
+
+      const maxLeft = Math.max(window.innerWidth - size, 0);
+      const maxTop = Math.max(window.innerHeight - size, 0);
+
+      windowElement.style.width = `${size}px`;
+      windowElement.style.height = `${size}px`;
+      windowElement.style.left = `${randomBetween(0, maxLeft)}px`;
+      windowElement.style.top = `${randomBetween(0, maxTop)}px`;
+
+      windowElement.style.setProperty(
+        "--crop-x",
+        String(randomBetween(0, 65))
+      );
+
+      windowElement.style.setProperty(
+        "--crop-y",
+        String(randomBetween(0, 65))
+      );
+
+      windowElement.style.zIndex = String(index + 1);
+    });
+  };
+
+  windows.forEach((windowElement) => {
+    windowElement.addEventListener("click", () => {
+      if (!viewer || !fullImage || !title || !description) return;
+
+      fullImage.setAttribute("src", windowElement.dataset.src ?? "");
+      fullImage.setAttribute("alt", windowElement.dataset.title ?? "");
+      title.textContent = windowElement.dataset.title ?? "";
+      description.textContent = windowElement.dataset.summary ?? "";
+
+      viewer.classList.add("visible");
+      viewer.setAttribute("aria-hidden", "false");
+    });
+  });
+
+  returnButton?.addEventListener("click", () => {
+    viewer?.classList.remove("visible");
+    viewer?.setAttribute("aria-hidden", "true");
+  });
+
+  placeWindows();
+</script>

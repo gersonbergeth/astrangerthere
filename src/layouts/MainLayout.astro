@@ -17,4 +17,21 @@ const { title } = Astro.props;
   <body>
     <slot />
   </body>
+
+  <style is:global>
+    :root {
+      --page-margin: 2rem;
+      --circle-size: 20px;
+      --foreground: white;
+      --background: black;
+      --font-main: "Courier New", monospace;
+    }
+
+    @media (max-width: 768px) {
+      :root {
+        --page-margin: 1rem;
+        --circle-size: 18px;
+      }
+    }
+  </style>
 </html>

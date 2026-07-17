@@ -1,0 +1,124 @@
+---
+import MainLayout from "../../layouts/MainLayout.astro";
+---
+
+<MainLayout title="Video">
+    <a href="/" class="home-link" aria-label="Home"></a>
+  <main class="video-hub">
+
+<a class="video-panel left" href="/video/stories-in-2-minutes">
+
+  <video autoplay muted loop playsinline class="background-video">
+    <source src="/videos/stories-in-2-minutes.mp4" type="video/mp4" />
+  </video>
+
+  <div class="overlay"></div>
+
+  <h1>Stories in 2 Minutes or Less</h1>
+</a>
+
+<a class="video-panel right" href="/video/11-seconds-street-art">
+
+  <video autoplay muted loop playsinline class="background-video">
+    <source src="/videos/11-seconds-street-art.mp4" type="video/mp4" />
+  </video>
+
+  <div class="overlay"></div>
+
+  <h1>11 Seconds with Street Art</h1>
+
+</a>
+
+  </main>
+</MainLayout>
+
+<style>
+
+.video-hub {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 100svh;
+    background: #000;
+}
+
+.video-panel {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100svh;
+    padding: 3rem;
+    overflow: hidden;
+    text-decoration: none;
+    color: white;
+}
+
+.background-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+}
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    z-index: 1;
+}
+
+.video-panel h1 {
+    position: relative;
+    z-index: 2;
+    margin: 0;
+    max-width: 10ch;
+    font-size: clamp(2rem, 4vw, 5rem);
+    font-weight: 300;
+    line-height: 0.95;
+    text-align: left;
+}
+
+.home-link {
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: white;
+    z-index: 100;
+    transition: transform .2s ease, opacity .2s ease;
+}
+
+.home-link:hover {
+    transform: scale(1.2);
+    opacity: .8;
+}
+
+@media (max-width: 768px) {
+
+    .video-hub {
+        grid-template-columns: 1fr;
+    }
+
+    .video-panel {
+        min-height: 50svh;
+        padding: 1.5rem;
+    }
+
+    .video-panel h1 {
+        font-size: 2.2rem;
+    }
+    
+    .home-link {
+    top: 1.5rem;
+    right: 1.5rem;
+    width: 18px;
+    height: 18px;
+}
+
+}
+
+</style>

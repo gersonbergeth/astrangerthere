@@ -1,0 +1,284 @@
+---
+import MainLayout from "../../layouts/MainLayout.astro";
+
+const musicFiles = import.meta.glob(
+  "../../content/music/*.md",
+  {
+    eager: true,
+    query: "?raw",
+    import: "default",
+  }
+);
+
+function parseSong(path, rawText) {
+  const match = rawText.match(
+    /^---\s*([\s\S]*?)\s*---\s*([\s\S]*)$/
+  );
+
+  if (!match) return null;
+
+  const metadata = {};
+
+  match[1].split("\n").forEach((line) => {
+    const separator = line.indexOf(":");
+    if (separator === -1) return;
+
+    const key = line.slice(0, separator).trim();
+    const value = line
+      .slice(separator + 1)
+      .trim()
+      .replace(/^["']|["']$/g, "");
+
+    metadata[key] = value;
+  });
+
+  return {
+    id: path.split("/").pop()?.replace(".md", ""),
+    title: metadata.title ?? "Untitled",
+    author: metadata.author ?? "",
+    date: metadata.date ?? "",
+    location: metadata.location ?? "",
+    recorded: metadata.recorded === "true",
+    tempo: Number(metadata.tempo) || 520,
+    body: match[2].trim(),
+  };
+}
+
+const songs = Object.entries(musicFiles)
+  .map(([path, rawText]) => parseSong(path, rawText))
+  .filter(Boolean);
+
+const selectedSong =
+  songs[Math.floor(Math.random() * songs.length)];
+---
+
+<MainLayout title={selectedSong?.title ?? "Lyrics"}>
+  <main class="lyrics-page">
+
+    <nav class="navigation">
+      <a
+        href="/music/"
+        class="circle"
+        aria-label="Return to Music"
+      ></a>
+
+      <a
+        href="/"
+        class="circle"
+        aria-label="Return Home"
+      ></a>
+    </nav>
+
+    {
+      selectedSong ? (
+        <article class="song">
+          <h1>{selectedSong.title}</h1>
+
+          <p class="song-meta">
+            {
+              [
+                selectedSong.author,
+                selectedSong.location,
+                selectedSong.date,
+              ]
+                .filter(Boolean)
+                .join(" · ")
+            }
+          </p>
+
+          <div id="lyrics" class="lyrics"></div>
+        </article>
+      ) : (
+        <p class="empty-message">No lyrics found.</p>
+      )
+    }
+
+    <script
+      id="song-data"
+      type="application/json"
+      set:html={JSON.stringify(selectedSong ?? null)}
+    ></script>
+
+  </main>
+</MainLayout>
+
+<style>
+  :global(html),
+  :global(body) {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #000;
+  }
+
+  .lyrics-page {
+    position: relative;
+    width: 100%;
+    height: 100svh;
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+    box-sizing: border-box;
+    padding: 4rem;
+    color: white;
+    background: #000;
+  }
+
+  .navigation {
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    z-index: 20;
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  .circle {
+    display: block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: white;
+  }
+
+  .song {
+    width: min(760px, 100%);
+    max-height: calc(100svh - 8rem);
+    overflow-y: auto;
+    font-family: "Courier New", monospace;
+    scrollbar-width: none;
+  }
+
+  .song::-webkit-scrollbar {
+    display: none;
+  }
+
+  .song h1 {
+    margin: 0 0 0.75rem;
+    font-size: clamp(2rem, 5vw, 4.5rem);
+    font-weight: 300;
+  }
+
+  .song-meta {
+    margin: 0 0 2.5rem;
+    font-size: 0.8rem;
+    opacity: 0.55;
+  }
+
+  .lyrics {
+    font-size: clamp(1rem, 1.5vw, 1.3rem);
+    line-height: 1.9;
+    white-space: pre-wrap;
+  }
+
+:global(.lyric-word) {
+    position: relative;
+    display: inline-block;
+    color: white;
+    transition: none;
+}
+
+:global(.lyric-word::after) {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -0.18em;
+
+    width: 100%;
+    height: 2px;
+
+    background: white;
+
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.18s ease;
+}
+
+:global(.lyric-word.active::after) {
+    transform: scaleX(1);
+}
+
+  .empty-message {
+    font-family: "Courier New", monospace;
+  }
+
+  @media (max-width: 768px) {
+    .lyrics-page {
+      padding: 4.5rem 1.5rem 2rem;
+    }
+
+    .navigation {
+      top: 1.5rem;
+      right: 1.5rem;
+    }
+
+    .circle {
+      width: 18px;
+      height: 18px;
+    }
+
+    .song {
+      max-height: calc(100svh - 7rem);
+    }
+
+    .lyrics {
+      font-size: 1rem;
+      line-height: 1.75;
+    }
+  }
+</style>
+
+<script>
+  const songData = document.getElementById("song-data");
+  const lyricsElement = document.getElementById("lyrics");
+
+  const song = songData?.textContent
+    ? JSON.parse(songData.textContent)
+    : null;
+
+  if (song && lyricsElement) {
+    const parts = song.body.split(/(\s+)/);
+
+    parts.forEach((part) => {
+      if (/^\s+$/.test(part)) {
+        lyricsElement.appendChild(
+          document.createTextNode(part)
+        );
+        return;
+      }
+
+      const word = document.createElement("span");
+      word.className = "lyric-word";
+      word.textContent = part;
+      lyricsElement.appendChild(word);
+    });
+
+    const words = Array.from(
+      lyricsElement.querySelectorAll(".lyric-word")
+    );
+
+    let currentIndex = 0;
+
+    const advanceCursor = () => {
+      if (currentIndex > 0) {
+        words[currentIndex - 1]?.classList.remove("active");
+      }
+
+      if (currentIndex >= words.length) return;
+
+      const currentWord = words[currentIndex];
+      currentWord.classList.add("active");
+
+      currentWord.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+
+      currentIndex += 1;
+      window.setTimeout(advanceCursor, song.tempo);
+    };
+
+    window.setTimeout(advanceCursor, 1000);
+  }
+</script>
