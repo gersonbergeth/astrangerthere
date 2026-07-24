@@ -1,0 +1,115 @@
+---
+import { streetArt } from "../../data/streetArt.js";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>11 Seconds with Street Art</title>
+  </head>
+
+  <body>
+    <nav class="street-nav" aria-label="Site navigation">
+      <a class="nav-circle" href="/video" aria-label="Video"></a>
+      <a class="nav-circle" href="/" aria-label="Home"></a>
+    </nav>
+
+    <main class="street-grid">
+      {streetArt.map((piece) => (
+        <a class="street-piece" href={`/video/street/${piece.id}`}>
+          <video autoplay muted loop playsinline preload="metadata">
+            <source src={piece.video} type="video/mp4" />
+          </video>
+        </a>
+      ))}
+    </main>
+  </body>
+</html>
+
+<style>
+  html,
+  body {
+    margin: 0;
+    min-height: 100%;
+    background: black;
+  }
+
+  body {
+    font-family: "Courier New", monospace;
+  }
+
+  .street-grid {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4px;
+    padding: 4px;
+    box-sizing: border-box;
+  }
+
+  .street-piece {
+    display: block;
+    overflow: hidden;
+    text-decoration: none;
+  }
+
+  .street-piece video {
+    display: block;
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+  }
+
+  .street-nav {
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    z-index: 100;
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+  }
+
+  .nav-circle {
+    display: block;
+    width: 20px;
+    height: 20px;
+    flex: 0 0 20px;
+    border-radius: 50%;
+    background: white;
+    transition:
+      transform 0.2s ease,
+      opacity 0.2s ease;
+  }
+
+  .nav-circle:hover {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+
+  @media (max-width: 768px) {
+    .street-nav {
+      top: 1.5rem;
+      right: 1.5rem;
+      gap: 12px;
+    }
+
+    .nav-circle {
+      width: 18px;
+      height: 18px;
+      flex-basis: 18px;
+    }
+  }
+
+  @media (min-width: 800px) {
+    .street-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .street-piece video {
+      height: 300px;
+    }
+  }
+</style>

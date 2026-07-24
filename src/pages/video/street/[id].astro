@@ -1,0 +1,174 @@
+---
+import { streetArt } from "../../../data/streetArt.js";
+
+export function getStaticPaths() {
+  return streetArt.map((piece) => ({
+    params: {
+      id: String(piece.id)
+    },
+    props: {
+      piece
+    }
+  }));
+}
+
+const { piece } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>11 Seconds with Street Art</title>
+  </head>
+
+  <body>
+    <main class="viewer">
+      <nav class="viewer-nav" aria-label="Site navigation">
+        <a
+          class="nav-circle"
+          href="/video/street"
+          aria-label="Street art collage"
+        ></a>
+
+        <a
+          class="nav-circle"
+          href="/video"
+          aria-label="Video split page"
+        ></a>
+
+        <a
+          class="nav-circle"
+          href="/"
+          aria-label="Home"
+        ></a>
+      </nav>
+
+      <video autoplay muted playsinline>
+        <source src={piece.video} type="video/mp4" />
+      </video>
+
+      <div class="metadata">
+        <div id="counter">1</div>
+        <div>{piece.city}, {piece.country}</div>
+        <div>{piece.artist}</div>
+      </div>
+    </main>
+  </body>
+</html>
+
+<style>
+  html,
+  body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    background: black;
+  }
+
+  body {
+    font-family: "Courier New", monospace;
+  }
+
+  .viewer {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .metadata {
+    position: absolute;
+    left: 40px;
+    bottom: 40px;
+    color: white;
+    font-size: 18px;
+    line-height: 1.2;
+    z-index: 5;
+  }
+
+  #counter {
+    font-family: Impact, "Arial Narrow", sans-serif;
+    font-size: 5rem;
+    line-height: 0.85;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.35rem;
+}
+
+  .viewer-nav {
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    z-index: 100;
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+  }
+
+  .nav-circle {
+    display: block;
+    width: 20px;
+    height: 20px;
+    flex: 0 0 20px;
+    border-radius: 50%;
+    background: white;
+    transition:
+      transform 0.2s ease,
+      opacity 0.2s ease;
+  }
+
+  .nav-circle:hover {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+
+  @media (max-width: 768px) {
+    .metadata {
+      left: 20px;
+      bottom: 20px;
+      font-size: 10px;
+    }
+
+    .viewer-nav {
+      top: 1.5rem;
+      right: 1.5rem;
+      gap: 12px;
+    }
+
+    .nav-circle {
+      width: 18px;
+      height: 18px;
+      flex-basis: 18px;
+    }
+    #counter {
+        font-size: 3.2rem;
+        margin-bottom: 0.25rem;
+    }
+
+
+  }
+</style>
+
+<script>
+  const video = document.querySelector("video");
+  const counter = document.querySelector("#counter");
+
+  if (video instanceof HTMLVideoElement && counter instanceof HTMLElement) {
+    video.addEventListener("timeupdate", () => {
+      const second = Math.min(11, Math.floor(video.currentTime) + 1);
+      counter.textContent = String(second).padStart(2, "0");
+    });
+
+    video.addEventListener("ended", () => {
+      counter.textContent = "11";
+    });
+  }
+</script>
