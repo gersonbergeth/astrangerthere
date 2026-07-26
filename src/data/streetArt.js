@@ -68,5 +68,20 @@ export const streetArt = [
     city: "Wrocław",
     country: "Poland",
     artist: "OKAP (Ośrodek Kulturalnej Animacji Podwórkowej)"
+  },
+  {
+    id: 11,
+    video: "/videos/street/street-art-011.mp4",
+    city: "",
+    country: "",
+    artist: ""
+  },
+  {
+    id: 12,
+    video: "/videos/street/street-art-012.mp4",
+    city: "",
+    country: "",
+    artist: ""
   }
+
 ];

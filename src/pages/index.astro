@@ -22,7 +22,9 @@ import MainLayout from "../layouts/MainLayout.astro";
             <a href="/art">Art</a>
             <a href="/words">Words</a>
             <span class="coming-soon">Products</span>
-            <a href="/music">Music</a>
+            <a href="/music">
+            <span class="crossed-out">Music</span> Lyrics
+            </a>
             <span class="coming-soon">Memo</span>
         </nav>
 
@@ -139,7 +141,9 @@ import MainLayout from "../layouts/MainLayout.astro";
 .cursor{
     animation:blink .8s infinite;
 }
-
+.crossed-out {
+  text-decoration: line-through;
+}
 @keyframes blink{
     50%{
         opacity:0;
