@@ -1,0 +1,217 @@
+---
+---
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width" />
+  <title>Hourglass Test</title>
+
+  <style>
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      background: #000;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hourglass {
+      position: relative;
+      width: 160px;
+      height: 260px;
+    }
+
+    /* Top and bottom bars */
+
+    .bar {
+      position: absolute;
+      left: -15px;
+      width: 190px;
+      height: 5px;
+      background: white;
+    }
+
+    .bar.top {
+      top: 0;
+    }
+
+    .bar.bottom {
+      bottom: 0;
+    }
+
+    /* Glass outline */
+
+    .glass {
+      position: absolute;
+      top: 12px;
+      left: 0;
+
+      width: 160px;
+      height: 236px;
+
+      border-left: 3px solid white;
+      border-right: 3px solid white;
+
+      clip-path: polygon(
+        0 0,
+        100% 0,
+        57% 50%,
+        100% 100%,
+        0 100%,
+        43% 50%
+      );
+    }
+
+    /* Sand chambers */
+
+    .top-sand {
+      position: absolute;
+
+      top: 20px;
+      left: 15px;
+
+      width: 130px;
+      height: 100px;
+
+      background: white;
+
+      clip-path: polygon(
+        0 0,
+        100% 0,
+        55% 100%,
+        45% 100%
+      );
+
+      transform-origin: top;
+    }
+
+    .bottom-sand {
+      position: absolute;
+
+      bottom: 20px;
+      left: 15px;
+
+      width: 130px;
+      height: 0;
+
+      background: white;
+
+      clip-path: polygon(
+        45% 0,
+        55% 0,
+        100% 100%,
+        0 100%
+      );
+    }
+
+    /* Falling sand */
+
+    .stream {
+      position: absolute;
+
+      left: 79px;
+      top: 125px;
+
+      width: 2px;
+      height: 105px;
+
+      background: white;
+    }
+
+    /* Timer */
+
+    .time {
+      position: absolute;
+
+      top: 50%;
+      left: 230px;
+
+      transform: translateY(-50%);
+
+      color: white;
+
+      font-family: "Courier New", monospace;
+      font-size: 18px;
+
+      white-space: nowrap;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="hourglass">
+
+    <div class="bar top"></div>
+    <div class="bar bottom"></div>
+
+    <div class="glass"></div>
+
+    <div class="top-sand"></div>
+
+    <div class="stream"></div>
+
+    <div class="bottom-sand"></div>
+
+    <div class="time">10</div>
+
+  </div>
+
+  <script>
+    const topSand = document.querySelector(".top-sand");
+    const bottomSand = document.querySelector(".bottom-sand");
+    const stream = document.querySelector(".stream");
+    const time = document.querySelector(".time");
+
+    const duration = 10;
+    let start = performance.now();
+
+    function animate(now) {
+
+      const elapsed = (now - start) / 1000;
+
+      let progress = elapsed / duration;
+
+      if (progress >= 1) {
+        progress = 0;
+        start = now;
+      }
+
+      const remaining = 1 - progress;
+
+      if (topSand instanceof HTMLElement) {
+        topSand.style.height =
+          `${100 * remaining}px`;
+      }
+
+      if (bottomSand instanceof HTMLElement) {
+        bottomSand.style.height =
+          `${100 * progress}px`;
+      }
+
+      if (time instanceof HTMLElement) {
+        time.textContent =
+          String(Math.ceil(duration * remaining));
+      }
+
+      if (stream instanceof HTMLElement) {
+        stream.style.opacity =
+          progress > 0.98 ? "0" : "1";
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    requestAnimationFrame(animate);
+  </script>
+
+</body>
+</html>

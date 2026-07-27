@@ -1,0 +1,183 @@
+---
+import MainLayout from "../../../layouts/MainLayout.astro";
+import { stories } from "../../../data/stories.js";
+
+export function getStaticPaths() {
+  return stories.map((story) => ({
+    params: { id: story.id },
+    props: { story },
+  }));
+}
+
+const { story } = Astro.props;
+---
+
+<MainLayout title={story.title}>
+  <main class="story-viewer">
+
+    <video
+      id="story-video"
+      class="story-video"
+      playsinline
+      preload="metadata"
+    >
+      <source src={story.video} type="video/mp4" />
+    </video>
+
+    <button
+      id="play-button"
+      class="play-button"
+      type="button"
+      aria-label="Play video"
+    >
+      ▶
+    </button>
+
+    <nav class="viewer-nav" aria-label="Site navigation">
+      <a
+        class="nav-circle"
+        href="/video/stories"
+        aria-label="Return to stories"
+      ></a>
+
+      <a
+        class="nav-circle"
+        href="/video"
+        aria-label="Return to video"
+      ></a>
+
+      <a
+        class="nav-circle"
+        href="/"
+        aria-label="Home"
+      ></a>
+    </nav>
+
+  </main>
+</MainLayout>
+
+<style>
+  :global(html),
+  :global(body) {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: black;
+  }
+
+  .story-viewer {
+    position: relative;
+    width: 100%;
+    height: 100svh;
+    overflow: hidden;
+    background: black;
+  }
+
+  .story-video {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+    background: black;
+    cursor: pointer;
+  }
+
+  .play-button {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 10;
+
+    transform: translate(-50%, -50%);
+
+    padding: 0;
+    border: 0;
+    background: transparent;
+
+    color: white;
+    font-size: 4rem;
+    line-height: 1;
+
+    cursor: pointer;
+  }
+
+  .viewer-nav {
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    z-index: 20;
+
+    display: flex;
+    gap: 12px;
+  }
+
+  .nav-circle {
+    display: block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: white;
+  }
+
+  @media (max-width: 768px) {
+    .viewer-nav {
+      top: 1.5rem;
+      right: 1.5rem;
+    }
+
+    .nav-circle {
+      width: 18px;
+      height: 18px;
+    }
+
+    .play-button {
+      font-size: 3rem;
+    }
+  }
+</style>
+
+<script>
+  const video = document.querySelector("#story-video");
+  const playButton = document.querySelector("#play-button");
+
+  function updatePlayButton() {
+    if (
+      !(video instanceof HTMLVideoElement) ||
+      !(playButton instanceof HTMLButtonElement)
+    ) {
+      return;
+    }
+
+    if (video.paused) {
+      playButton.textContent = "▶";
+      playButton.setAttribute("aria-label", "Play video");
+    } else {
+      playButton.textContent = "Ⅱ";
+      playButton.setAttribute("aria-label", "Pause video");
+    }
+  }
+
+  async function togglePlayback() {
+    if (!(video instanceof HTMLVideoElement)) return;
+
+    if (video.paused) {
+      try {
+        await video.play();
+      } catch (error) {
+        console.error("Video playback failed:", error);
+      }
+    } else {
+      video.pause();
+    }
+  }
+
+  playButton?.addEventListener("click", togglePlayback);
+  video?.addEventListener("click", togglePlayback);
+
+  video?.addEventListener("play", updatePlayButton);
+  video?.addEventListener("pause", updatePlayButton);
+  video?.addEventListener("ended", updatePlayButton);
+
+  updatePlayButton();
+</script>
