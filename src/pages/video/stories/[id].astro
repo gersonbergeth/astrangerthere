@@ -24,6 +24,275 @@ const { story } = Astro.props;
       <source src={story.video} type="video/mp4" />
     </video>
 
+
+    <!-- =====================
+         TIMER — TOP LEFT
+    ====================== -->
+
+    <div class={`timer timer-${story.id}`}>
+
+      <!-- STORY 01 — SUNDIAL -->
+      {story.id === "01" && (
+        <svg viewBox="0 0 300 170" aria-hidden="true">
+          <path
+            class="timer-line"
+            d="M20 145 Q150 10 280 145"
+          />
+
+          <line
+            class="timer-line"
+            x1="10"
+            y1="145"
+            x2="290"
+            y2="145"
+          />
+
+          <circle
+            id="sun"
+            class="timer-fill"
+            cx="20"
+            cy="145"
+            r="9"
+          />
+        </svg>
+      )}
+
+
+      <!-- STORY 02 — HOURGLASS -->
+      {story.id === "02" && (
+        <svg viewBox="0 0 180 300" aria-hidden="true">
+
+          <line class="timer-frame" x1="25" y1="20" x2="155" y2="20" />
+          <line class="timer-frame" x1="25" y1="280" x2="155" y2="280" />
+
+          <path
+            class="timer-line"
+            d="
+              M35 30
+              L145 30
+              C140 90 115 120 94 148
+              C115 178 140 210 145 270
+              L35 270
+              C40 210 65 178 86 148
+              C65 120 40 90 35 30
+              Z
+            "
+          />
+
+          <clipPath id="topChamber">
+            <path d="
+              M38 33
+              L142 33
+              C136 90 112 120 91 146
+              C70 120 44 90 38 33
+              Z
+            "/>
+          </clipPath>
+
+          <clipPath id="bottomChamber">
+            <path d="
+              M89 152
+              C68 180 44 210 38 267
+              L142 267
+              C136 210 112 180 91 152
+              Z
+            "/>
+          </clipPath>
+
+          <rect
+            id="topSand"
+            class="timer-fill"
+            x="30"
+            y="33"
+            width="120"
+            height="113"
+            clip-path="url(#topChamber)"
+          />
+
+          <line
+            id="sandStream"
+            class="timer-line"
+            x1="90"
+            y1="145"
+            x2="90"
+            y2="250"
+          />
+
+          <rect
+            id="bottomSand"
+            class="timer-fill"
+            x="30"
+            y="267"
+            width="120"
+            height="0"
+            clip-path="url(#bottomChamber)"
+          />
+
+        </svg>
+      )}
+
+
+      <!-- STORY 03 — BAKING TIMER -->
+      {story.id === "03" && (
+        <svg viewBox="0 0 240 300" aria-hidden="true">
+
+          <path
+            class="timer-line timer-body"
+            d="
+              M58 110
+              C58 55 83 28 120 28
+              C157 28 182 55 182 110
+              L194 245
+              C196 263 185 274 166 274
+              L74 274
+              C55 274 44 263 46 245
+              Z
+            "
+          />
+
+          <circle
+            class="timer-line"
+            cx="120"
+            cy="110"
+            r="70"
+          />
+
+          <g class="timer-marks">
+            {Array.from({ length: 12 }).map((_, i) => {
+              const angle = i * 30 * Math.PI / 180;
+              const x1 = 120 + Math.sin(angle) * 55;
+              const y1 = 110 - Math.cos(angle) * 55;
+              const x2 = 120 + Math.sin(angle) * 64;
+              const y2 = 110 - Math.cos(angle) * 64;
+
+              return (
+                <line
+                  class="timer-line"
+                  x1={x1}
+                  y1={y1}
+                  x2={x2}
+                  y2={y2}
+                />
+              );
+            })}
+          </g>
+
+          <line
+            class="timer-frame"
+            x1="120"
+            y1="38"
+            x2="120"
+            y2="53"
+          />
+
+          <g id="dialIndicator">
+            <line
+              class="timer-frame"
+              x1="120"
+              y1="110"
+              x2="120"
+              y2="62"
+            />
+          </g>
+
+          <line
+            class="timer-line"
+            x1="72"
+            y1="235"
+            x2="168"
+            y2="235"
+          />
+
+        </svg>
+      )}
+
+
+      <!-- STORY 04 — CANDLE -->
+      {story.id === "04" && (
+        <svg viewBox="0 0 180 320" aria-hidden="true">
+
+          <ellipse
+            class="timer-line"
+            cx="90"
+            cy="285"
+            rx="55"
+            ry="12"
+          />
+
+          <rect
+            id="candle"
+            class="timer-fill"
+            x="48"
+            y="90"
+            width="84"
+            height="190"
+            rx="8"
+          />
+
+          <line
+            id="wick"
+            class="timer-frame"
+            x1="90"
+            y1="90"
+            x2="90"
+            y2="72"
+          />
+
+          <path
+            id="flame"
+            class="timer-fill"
+            d="
+              M90 68
+              C73 49 82 26 92 16
+              C98 35 111 44 104 58
+              C101 65 96 69 90 68
+              Z
+            "
+          />
+
+        </svg>
+      )}
+
+    </div>
+
+
+    <!-- =====================
+         NAVIGATION — TOP RIGHT
+    ====================== -->
+
+    <nav class="viewer-nav" aria-label="Site navigation">
+      <a class="nav-circle" href="/video/stories" aria-label="Stories"></a>
+      <a class="nav-circle" href="/video" aria-label="Video"></a>
+      <a class="nav-circle" href="/" aria-label="Home"></a>
+    </nav>
+
+
+    <!-- =====================
+         EXPLANATION — BOTTOM LEFT
+    ====================== -->
+
+    <button
+      id="explanation-button"
+      class="explanation-button"
+      type="button"
+      aria-label="Show explanation"
+    >
+      +
+    </button>
+
+    <div
+      id="explanation-panel"
+      class="explanation-panel"
+      aria-hidden="true"
+    >
+      <p>{story.description ?? "Explanation for this story will go here."}</p>
+    </div>
+
+
+    <!-- =====================
+         PLAY / PAUSE — BOTTOM RIGHT
+    ====================== -->
+
     <button
       id="play-button"
       class="play-button"
@@ -33,30 +302,12 @@ const { story } = Astro.props;
       ▶
     </button>
 
-    <nav class="viewer-nav" aria-label="Site navigation">
-      <a
-        class="nav-circle"
-        href="/video/stories"
-        aria-label="Return to stories"
-      ></a>
-
-      <a
-        class="nav-circle"
-        href="/video"
-        aria-label="Return to video"
-      ></a>
-
-      <a
-        class="nav-circle"
-        href="/"
-        aria-label="Home"
-      ></a>
-    </nav>
-
   </main>
 </MainLayout>
 
+
 <style>
+
   :global(html),
   :global(body) {
     margin: 0;
@@ -78,85 +329,190 @@ const { story } = Astro.props;
     width: 100%;
     height: 100%;
     display: block;
-    object-fit: contain;
+    object-fit: cover;
     background: black;
     cursor: pointer;
   }
 
-  .play-button {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    z-index: 10;
 
-    transform: translate(-50%, -50%);
+  /* TIMER */
 
-    padding: 0;
-    border: 0;
-    background: transparent;
+  .timer {
+    position: fixed;
+    top: clamp(1.25rem, 3vw, 2rem);
+    left: clamp(1.25rem, 3vw, 2rem);
+    z-index: 20;
 
-    color: white;
-    font-size: 4rem;
-    line-height: 1;
+    width: clamp(110px, 16vw, 230px);
 
-    cursor: pointer;
+    pointer-events: none;
   }
+
+  .timer svg {
+    width: 100%;
+    max-height: 25vh;
+    display: block;
+    overflow: visible;
+  }
+
+  .timer-line {
+    fill: none;
+    stroke: white;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .timer-frame {
+    fill: none;
+    stroke: white;
+    stroke-width: 5;
+    stroke-linecap: round;
+  }
+
+  .timer-fill {
+    fill: white;
+  }
+
+  .timer-01 {
+    width: clamp(150px, 25vw, 350px);
+  }
+
+  .timer-02,
+  .timer-03,
+  .timer-04 {
+    width: clamp(90px, 13vw, 180px);
+  }
+
+
+  /* NAVIGATION */
 
   .viewer-nav {
     position: fixed;
-    top: 2rem;
-    right: 2rem;
-    z-index: 20;
+    top: clamp(1.5rem, 3vw, 2rem);
+    right: clamp(1.5rem, 3vw, 2rem);
+    z-index: 30;
 
     display: flex;
     gap: 12px;
   }
 
   .nav-circle {
+    width: clamp(18px, 1.4vw, 20px);
+    height: clamp(18px, 1.4vw, 20px);
+
     display: block;
-    width: 20px;
-    height: 20px;
+
     border-radius: 50%;
     background: white;
   }
 
-  @media (max-width: 768px) {
-    .viewer-nav {
-      top: 1.5rem;
-      right: 1.5rem;
-    }
 
-    .nav-circle {
-      width: 18px;
-      height: 18px;
-    }
+  /* BOTTOM CONTROLS */
 
-    .play-button {
-      font-size: 3rem;
-    }
+  .explanation-button,
+  .play-button {
+    position: fixed;
+    bottom: clamp(1.5rem, 3vw, 2rem);
+    z-index: 40;
+
+    padding: 0;
+    border: 0;
+
+    color: white;
+    background: transparent;
+
+    line-height: 1;
+    cursor: pointer;
   }
+
+  .explanation-button {
+    left: clamp(1.5rem, 3vw, 2rem);
+
+    font-family: "Courier New", monospace;
+    font-size: clamp(1.8rem, 3vw, 2.4rem);
+  }
+
+  .play-button {
+    right: clamp(1.5rem, 3vw, 2rem);
+    font-size: clamp(2rem, 4vw, 3rem);
+  }
+
+
+  /* EXPLANATION PANEL */
+
+  .explanation-panel {
+    position: fixed;
+
+    left: 0;
+    bottom: 4.5rem;
+
+    z-index: 35;
+
+    width: min(620px, calc(100vw - 3rem));
+    padding: 1.5rem 2rem;
+
+    box-sizing: border-box;
+
+    color: white;
+    background: rgb(0 0 0 / 78%);
+
+    transform: translateX(-105%);
+    transition: transform 0.4s ease;
+
+    pointer-events: none;
+  }
+
+  .explanation-panel.visible {
+    transform: translateX(0);
+    pointer-events: auto;
+  }
+
+  .explanation-panel p {
+    margin: 0;
+
+    font-family: "Courier New", monospace;
+    font-size: clamp(0.85rem, 1.2vw, 1rem);
+    line-height: 1.6;
+  }
+
+
+  @media (max-width: 768px) {
+
+    .timer-01 {
+      width: clamp(140px, 42vw, 220px);
+    }
+
+    .timer-02,
+    .timer-03,
+    .timer-04 {
+      width: clamp(85px, 26vw, 130px);
+    }
+
+    .explanation-panel {
+      bottom: 4rem;
+      width: calc(100vw - 2rem);
+      padding: 1.25rem 1.5rem;
+    }
+
+  }
+
 </style>
 
+
 <script>
+
   const video = document.querySelector("#story-video");
-  const playButton = document.querySelector("#play-button");
+  const play = document.querySelector("#play-button");
 
-  function updatePlayButton() {
-    if (
-      !(video instanceof HTMLVideoElement) ||
-      !(playButton instanceof HTMLButtonElement)
-    ) {
-      return;
-    }
+  const explanationButton =
+    document.querySelector("#explanation-button");
 
-    if (video.paused) {
-      playButton.textContent = "▶";
-      playButton.setAttribute("aria-label", "Play video");
-    } else {
-      playButton.textContent = "Ⅱ";
-      playButton.setAttribute("aria-label", "Pause video");
-    }
-  }
+  const explanationPanel =
+    document.querySelector("#explanation-panel");
+
+
+  /* PLAY / PAUSE */
 
   async function togglePlayback() {
     if (!(video instanceof HTMLVideoElement)) return;
@@ -164,20 +520,192 @@ const { story } = Astro.props;
     if (video.paused) {
       try {
         await video.play();
-      } catch (error) {
-        console.error("Video playback failed:", error);
-      }
+      } catch {}
     } else {
       video.pause();
     }
   }
 
-  playButton?.addEventListener("click", togglePlayback);
+  function updatePlay() {
+    if (
+      video instanceof HTMLVideoElement &&
+      play instanceof HTMLButtonElement
+    ) {
+      play.textContent = video.paused ? "▶︎" : "⏸";
+    }
+  }
+
+
+  /* EXPLANATION */
+
+  explanationButton?.addEventListener("click", () => {
+
+    if (
+      !(explanationButton instanceof HTMLButtonElement) ||
+      !(explanationPanel instanceof HTMLElement)
+    ) return;
+
+    const open =
+      explanationPanel.classList.toggle("visible");
+
+    explanationButton.textContent =
+      open ? "−" : "+";
+
+    explanationPanel.setAttribute(
+      "aria-hidden",
+      open ? "false" : "true"
+    );
+
+  });
+
+
+  /* TIMER */
+
+  function updateTimer() {
+
+    if (!(video instanceof HTMLVideoElement)) return;
+
+    const duration =
+      Number.isFinite(video.duration) && video.duration > 0
+        ? video.duration
+        : 120;
+
+    const progress =
+      Math.min(video.currentTime / duration, 1);
+
+
+    /* STORY 01 — SUNDIAL */
+
+    const sun = document.querySelector("#sun");
+
+    if (sun instanceof SVGCircleElement) {
+
+      const x = 20 + progress * 260;
+      const y = 145 - Math.sin(progress * Math.PI) * 125;
+
+      sun.setAttribute("cx", String(x));
+      sun.setAttribute("cy", String(y));
+    }
+
+
+    /* STORY 02 — HOURGLASS */
+
+    const topSand = document.querySelector("#topSand");
+    const bottomSand = document.querySelector("#bottomSand");
+    const stream = document.querySelector("#sandStream");
+
+    if (
+      topSand instanceof SVGRectElement &&
+      bottomSand instanceof SVGRectElement
+    ) {
+
+      const topHeight = 113 * (1 - progress);
+      const bottomHeight = 115 * progress;
+
+      topSand.setAttribute(
+        "y",
+        String(146 - topHeight)
+      );
+
+      topSand.setAttribute(
+        "height",
+        String(topHeight)
+      );
+
+      bottomSand.setAttribute(
+        "y",
+        String(267 - bottomHeight)
+      );
+
+      bottomSand.setAttribute(
+        "height",
+        String(bottomHeight)
+      );
+
+      if (stream instanceof SVGElement) {
+        stream.style.opacity =
+          progress >= 1 ? "0" : "1";
+      }
+
+    }
+
+
+    /* STORY 03 — BAKING TIMER */
+
+    const dial =
+      document.querySelector("#dialIndicator");
+
+    if (dial instanceof SVGGElement) {
+
+      const rotation =
+        330 * (1 - progress);
+
+      dial.setAttribute(
+        "transform",
+        `rotate(${rotation} 120 110)`
+      );
+
+    }
+
+
+    /* STORY 04 — CANDLE */
+
+    const candle = document.querySelector("#candle");
+    const wick = document.querySelector("#wick");
+    const flame = document.querySelector("#flame");
+
+    if (
+      candle instanceof SVGRectElement &&
+      wick instanceof SVGLineElement &&
+      flame instanceof SVGPathElement
+    ) {
+
+      const startY = 90;
+      const startHeight = 190;
+      const minHeight = 28;
+
+      const height =
+        startHeight -
+        progress * (startHeight - minHeight);
+
+      const y =
+        startY + (startHeight - height);
+
+      candle.setAttribute("y", String(y));
+      candle.setAttribute("height", String(height));
+
+      wick.setAttribute("y1", String(y));
+      wick.setAttribute("y2", String(y - 18));
+
+      const flicker =
+        Math.sin(video.currentTime * 16);
+
+      flame.setAttribute(
+        "transform",
+        `translate(0 ${y - startY})
+         scale(${1 + flicker * 0.05} ${1 + flicker * 0.1})
+         rotate(${flicker * 4} 90 68)`
+      );
+
+    }
+
+  }
+
+
+  /* EVENTS */
+
+  play?.addEventListener("click", togglePlayback);
   video?.addEventListener("click", togglePlayback);
 
-  video?.addEventListener("play", updatePlayButton);
-  video?.addEventListener("pause", updatePlayButton);
-  video?.addEventListener("ended", updatePlayButton);
+  video?.addEventListener("play", updatePlay);
+  video?.addEventListener("pause", updatePlay);
+  video?.addEventListener("ended", updatePlay);
 
-  updatePlayButton();
+  video?.addEventListener("timeupdate", updateTimer);
+  video?.addEventListener("seeked", updateTimer);
+  video?.addEventListener("loadedmetadata", updateTimer);
+
+  updatePlay();
+  updateTimer();
+
 </script>
