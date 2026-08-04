@@ -412,20 +412,34 @@ const { story } = Astro.props;
 
   .explanation-button,
   .play-button {
-    position: fixed;
-    bottom: clamp(1.5rem, 3vw, 2rem);
-    z-index: 40;
+  position: fixed;
+  right: clamp(1.5rem, 3vw, 2rem);
+  bottom: clamp(1.5rem, 3vw, 2rem);
+  z-index: 40;
 
-    padding: 0;
-    border: 0;
+  appearance: none;
+  -webkit-appearance: none;
 
-    color: white;
-    background: transparent;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
 
-    line-height: 1;
-    cursor: pointer;
-  }
+  background: transparent;
+  color: white;
 
+  font-family: Arial, sans-serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1;
+
+  cursor: pointer;
+}
+.play-button:focus,
+.play-button:active {
+  background: transparent;
+  color: white;
+  outline: none;
+}
   .explanation-button {
     left: clamp(1.5rem, 3vw, 2rem);
 
