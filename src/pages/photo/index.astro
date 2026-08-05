@@ -199,20 +199,23 @@ const photos = [
     gap: 0.75rem;
   }
 
-  .dime-button {
-    position: absolute;
-    bottom: 2rem;
-    left: 2rem;
-    z-index: 120;
-    padding: 0;
-    border: 0;
-    color: white;
-    background: transparent;
-    font-family: "Courier New", monospace;
-    font-size: 1.8rem;
-    line-height: 1;
-    cursor: pointer;
-  }
+.dime-button {
+  position: fixed;
+  bottom: 2rem;
+  left: 2rem;
+  z-index: 200;
+
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: white;
+
+  font-family: "Courier New", monospace;
+  font-size: 2rem;
+  line-height: 1;
+
+  cursor: pointer;
+}
 
   .description-panel {
     position: absolute;
@@ -239,45 +242,66 @@ const photos = [
   }
 
 @media (max-width: 768px) {
-  .collage {
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(5, 1fr);
-    width: 100%;
-    height: 100%;
-  }
-}
 
-  .photo-card,
-  .photo-card img {
-    min-height: 0;
+  .photo-grid {
+    grid-template-columns: 1fr;
   }
 
-  .home-circle {
-    top: 1.5rem;
-    right: 1.5rem;
-    width: 18px;
-    height: 18px;
-  }
-
-  .viewer-navigation {
+  .viewer-nav {
     top: 1.5rem;
     right: 1.5rem;
   }
 
-  .viewer-navigation .circle {
+  .nav-circle {
     width: 18px;
     height: 18px;
   }
 
+  /* Keep + / − permanently visible above description */
   .dime-button {
-    bottom: 1.5rem;
+    position: fixed;
     left: 1.5rem;
+    bottom: 1.5rem;
+    z-index: 200;
+
+    padding: 0;
+    margin: 0;
+    border: 0;
+
+    background: transparent;
+    color: white;
+
+    font-size: 2rem;
+    line-height: 1;
   }
 
+  /* Description stays inside mobile viewport */
   .description-panel {
-    padding: 4rem 1.5rem 1.5rem;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+
+    width: 100%;
+    max-width: 100vw;
+
+    padding: 1.5rem 1.5rem 5rem;
+
+    box-sizing: border-box;
+
+    z-index: 150;
+
+    overflow-y: auto;
+    max-height: 70svh;
   }
 
+  .description-panel p {
+    margin: 0;
+
+    font-size: 0.9rem;
+    line-height: 1.5;
+
+    overflow-wrap: break-word;
+  }
 }
 </style>
 
