@@ -1,7 +1,7 @@
 ---
 title: "Mistaken Choices"
 author: "Stranger"
-date: "01/10/2001
+date: "01/10/2001"
 location: "Jakarta"
 published: true
 ---
