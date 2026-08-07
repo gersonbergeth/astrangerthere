@@ -1,6 +1,6 @@
 ---
 title: "I Know Now"
-author: "Gerson Bergeth"
+author: "Stranger"
 date: "09/09/2020"
 location: "Cox's Bazar"
 published: true

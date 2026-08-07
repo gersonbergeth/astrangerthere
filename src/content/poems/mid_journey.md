@@ -1,6 +1,6 @@
 ---
 title: "Mid Journey"
-author: "Gerson Bergeth"
+author: "Stranger"
 date: "30/09/2023"
 location: "Oslo"
 published: true

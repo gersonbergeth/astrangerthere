@@ -1,6 +1,6 @@
 ---
 title: "Sleeping Words"
-author: "Gerson Bergeth"
+author: "Stranger"
 date: "01/10/2017"
 location: "Bangkok"
 published: true

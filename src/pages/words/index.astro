@@ -255,6 +255,8 @@ const poems = Object.entries(poemFiles)
   const poemBody = document.getElementById("poem-body");
   const returnButton = document.getElementById("return-to-words");
 
+  const excludedWords = ["i", "of", "a", "an", "the", "and", "as", "is", "or", "to" , "it", "at"]
+
   const normalizeWord = (word) =>
     word
       .toLocaleLowerCase()
@@ -374,7 +376,12 @@ const poems = Object.entries(poemFiles)
     const perPoemLimit = isMobile ? 12 : 35;
 
     const pool = poems.flatMap((poem) =>
-      shuffle(tokenize(poem.body))
+      shuffle(
+        tokenize(poem.body).filter(
+          (word) =>
+            !excludedWords.includes(normalizeWord(word))
+        )
+      )
         .slice(0, perPoemLimit)
         .map((word) => ({
           word,

@@ -1,6 +1,6 @@
 ---
 title: "Thanks Friend"
-author: "Gerson Bergeth"
+author: "Stranger"
 date: "15/06/2026"
 location: "Kyiv"
 recorded: false

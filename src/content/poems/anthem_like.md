@@ -1,6 +1,6 @@
 ---
 title: "Anthem-like"
-author: "Gerson Bergeth"
+author: "Stranger"
 date: "01/10/2001"
 location: "Jakarta"
 published: true
