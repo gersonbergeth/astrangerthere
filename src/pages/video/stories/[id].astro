@@ -25,193 +25,9 @@ const { story } = Astro.props;
     </video>
 
 
-    <!-- TIMER — TOP LEFT -->
-    <div class={`timer timer-${story.id}`}>
-
-      {story.id === "01" && (
-        <svg viewBox="0 0 300 170" aria-hidden="true">
-          <path class="timer-line" d="M20 145 Q150 10 280 145" />
-          <line class="timer-line" x1="10" y1="145" x2="290" y2="145" />
-          <circle id="sun" class="timer-fill" cx="20" cy="145" r="9" />
-        </svg>
-      )}
-
-      {story.id === "02" && (
-        <svg viewBox="0 0 180 300" aria-hidden="true">
-
-          <line class="timer-frame" x1="25" y1="20" x2="155" y2="20" />
-          <line class="timer-frame" x1="25" y1="280" x2="155" y2="280" />
-
-          <path
-            class="timer-line"
-            d="
-              M35 30
-              L145 30
-              C140 90 115 120 94 148
-              C115 178 140 210 145 270
-              L35 270
-              C40 210 65 178 86 148
-              C65 120 40 90 35 30
-              Z
-            "
-          />
-
-          <clipPath id="topChamber">
-            <path d="
-              M38 33
-              L142 33
-              C136 90 112 120 91 146
-              C70 120 44 90 38 33
-              Z
-            "/>
-          </clipPath>
-
-          <clipPath id="bottomChamber">
-            <path d="
-              M89 152
-              C68 180 44 210 38 267
-              L142 267
-              C136 210 112 180 91 152
-              Z
-            "/>
-          </clipPath>
-
-          <rect
-            id="topSand"
-            class="timer-fill"
-            x="30"
-            y="33"
-            width="120"
-            height="113"
-            clip-path="url(#topChamber)"
-          />
-
-          <line
-            id="sandStream"
-            class="timer-line"
-            x1="90"
-            y1="145"
-            x2="90"
-            y2="250"
-          />
-
-          <rect
-            id="bottomSand"
-            class="timer-fill"
-            x="30"
-            y="267"
-            width="120"
-            height="0"
-            clip-path="url(#bottomChamber)"
-          />
-        </svg>
-      )}
-
-      {story.id === "03" && (
-        <svg viewBox="0 0 240 300" aria-hidden="true">
-
-          <path
-            class="timer-line timer-body"
-            d="
-              M58 110
-              C58 55 83 28 120 28
-              C157 28 182 55 182 110
-              L194 245
-              C196 263 185 274 166 274
-              L74 274
-              C55 274 44 263 46 245
-              Z
-            "
-          />
-
-          <circle class="timer-line" cx="120" cy="110" r="70" />
-
-          <g>
-            {Array.from({ length: 12 }).map((_, i) => {
-              const angle = i * 30 * Math.PI / 180;
-              const x1 = 120 + Math.sin(angle) * 55;
-              const y1 = 110 - Math.cos(angle) * 55;
-              const x2 = 120 + Math.sin(angle) * 64;
-              const y2 = 110 - Math.cos(angle) * 64;
-
-              return (
-                <line
-                  class="timer-line"
-                  x1={x1}
-                  y1={y1}
-                  x2={x2}
-                  y2={y2}
-                />
-              );
-            })}
-          </g>
-
-          <line class="timer-frame" x1="120" y1="38" x2="120" y2="53" />
-
-          <g id="dialIndicator">
-            <line
-              class="timer-frame"
-              x1="120"
-              y1="110"
-              x2="120"
-              y2="62"
-            />
-          </g>
-
-          <line
-            class="timer-line"
-            x1="72"
-            y1="235"
-            x2="168"
-            y2="235"
-          />
-        </svg>
-      )}
-
-      {story.id === "04" && (
-        <svg viewBox="0 0 180 320" aria-hidden="true">
-
-          <ellipse
-            class="timer-line"
-            cx="90"
-            cy="285"
-            rx="55"
-            ry="12"
-          />
-
-          <rect
-            id="candle"
-            class="timer-fill"
-            x="48"
-            y="90"
-            width="84"
-            height="190"
-            rx="8"
-          />
-
-          <line
-            id="wick"
-            class="timer-frame"
-            x1="90"
-            y1="90"
-            x2="90"
-            y2="72"
-          />
-
-          <path
-            id="flame"
-            class="timer-fill"
-            d="
-              M90 68
-              C73 49 82 26 92 16
-              C98 35 111 44 104 58
-              C101 65 96 69 90 68
-              Z
-            "
-          />
-        </svg>
-      )}
-
+    <!-- VIDEO PROGRESS — TOP LEFT -->
+    <div class="video-progress" role="progressbar" aria-label="Video playback progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+      <div id="video-progress-fill" class="video-progress-fill"></div>
     </div>
 
 
@@ -284,50 +100,25 @@ const { story } = Astro.props;
   }
 
 
-  /* TIMER */
+  /* VIDEO PROGRESS */
 
-  .timer {
+  .video-progress {
     position: fixed;
-    top: clamp(1.25rem, 3vw, 2rem);
-    left: clamp(1.25rem, 3vw, 2rem);
+    top: clamp(1.5rem, 3vw, 2rem);
+    left: clamp(1.5rem, 3vw, 2rem);
     z-index: 20;
+    width: 113px;
+    height: 19px;
+    border: 1px solid white;
+    box-sizing: border-box;
+    padding: 2px;
     pointer-events: none;
   }
 
-  .timer svg {
-    width: 100%;
-    max-height: 25vh;
-    display: block;
-    overflow: visible;
-  }
-
-  .timer-line {
-    fill: none;
-    stroke: white;
-    stroke-width: 3;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-
-  .timer-frame {
-    fill: none;
-    stroke: white;
-    stroke-width: 5;
-    stroke-linecap: round;
-  }
-
-  .timer-fill {
-    fill: white;
-  }
-
-  .timer-01 {
-    width: clamp(150px, 25vw, 350px);
-  }
-
-  .timer-02,
-  .timer-03,
-  .timer-04 {
-    width: clamp(90px, 13vw, 180px);
+  .video-progress-fill {
+    width: 0%;
+    height: 100%;
+    background: white;
   }
 
 
@@ -510,14 +301,9 @@ const { story } = Astro.props;
 
   @media (max-width: 768px) {
 
-    .timer-01 {
-      width: clamp(140px, 42vw, 220px);
-    }
-
-    .timer-02,
-    .timer-03,
-    .timer-04 {
-      width: clamp(85px, 26vw, 130px);
+    .video-progress {
+      width: 95px;
+      height: 15px;
     }
 
     .explanation-panel {
@@ -592,126 +378,23 @@ const { story } = Astro.props;
   });
 
 
-  /* TIMER */
+  /* VIDEO PROGRESS */
 
-  function updateTimer() {
+  function updateProgress() {
     if (!(video instanceof HTMLVideoElement)) return;
 
-    const duration =
-      Number.isFinite(video.duration) && video.duration > 0
-        ? video.duration
-        : 120;
+    const fill = document.querySelector("#video-progress-fill");
+    const bar = document.querySelector(".video-progress");
+    const duration = video.duration;
+    const progress = Number.isFinite(duration) && duration > 0
+      ? Math.min(100, Math.max(0, (video.currentTime / duration) * 100))
+      : 0;
 
-    const progress =
-      Math.min(video.currentTime / duration, 1);
-
-
-    /* STORY 01 — SUNDIAL */
-
-    const sun = document.querySelector("#sun");
-
-    if (sun instanceof SVGCircleElement) {
-      const x = 20 + progress * 260;
-      const y = 145 - Math.sin(progress * Math.PI) * 125;
-
-      sun.setAttribute("cx", String(x));
-      sun.setAttribute("cy", String(y));
+    if (fill instanceof HTMLElement) {
+      fill.style.width = `${progress}%`;
     }
-
-
-    /* STORY 02 — HOURGLASS */
-
-    const topSand = document.querySelector("#topSand");
-    const bottomSand = document.querySelector("#bottomSand");
-    const stream = document.querySelector("#sandStream");
-
-    if (
-      topSand instanceof SVGRectElement &&
-      bottomSand instanceof SVGRectElement
-    ) {
-      const topHeight = 113 * (1 - progress);
-      const bottomHeight = 115 * progress;
-
-      topSand.setAttribute(
-        "y",
-        String(146 - topHeight)
-      );
-
-      topSand.setAttribute(
-        "height",
-        String(topHeight)
-      );
-
-      bottomSand.setAttribute(
-        "y",
-        String(267 - bottomHeight)
-      );
-
-      bottomSand.setAttribute(
-        "height",
-        String(bottomHeight)
-      );
-
-      if (stream instanceof SVGElement) {
-        stream.style.opacity =
-          progress >= 1 ? "0" : "1";
-      }
-    }
-
-
-    /* STORY 03 — BAKING TIMER */
-
-    const dial =
-      document.querySelector("#dialIndicator");
-
-    if (dial instanceof SVGGElement) {
-      const rotation =
-        330 * (1 - progress);
-
-      dial.setAttribute(
-        "transform",
-        `rotate(${rotation} 120 110)`
-      );
-    }
-
-
-    /* STORY 04 — CANDLE */
-
-    const candle = document.querySelector("#candle");
-    const wick = document.querySelector("#wick");
-    const flame = document.querySelector("#flame");
-
-    if (
-      candle instanceof SVGRectElement &&
-      wick instanceof SVGLineElement &&
-      flame instanceof SVGPathElement
-    ) {
-      const startY = 90;
-      const startHeight = 190;
-      const minHeight = 28;
-
-      const height =
-        startHeight -
-        progress * (startHeight - minHeight);
-
-      const y =
-        startY + (startHeight - height);
-
-      candle.setAttribute("y", String(y));
-      candle.setAttribute("height", String(height));
-
-      wick.setAttribute("y1", String(y));
-      wick.setAttribute("y2", String(y - 18));
-
-      const flicker =
-        Math.sin(video.currentTime * 16);
-
-      flame.setAttribute(
-        "transform",
-        `translate(0 ${y - startY})
-         scale(${1 + flicker * 0.05} ${1 + flicker * 0.1})
-         rotate(${flicker * 4} 90 68)`
-      );
+    if (bar instanceof HTMLElement) {
+      bar.setAttribute("aria-valuenow", String(Math.round(progress)));
     }
   }
 
@@ -725,10 +408,10 @@ const { story } = Astro.props;
   video?.addEventListener("pause", updatePlay);
   video?.addEventListener("ended", updatePlay);
 
-  video?.addEventListener("timeupdate", updateTimer);
-  video?.addEventListener("seeked", updateTimer);
-  video?.addEventListener("loadedmetadata", updateTimer);
+  video?.addEventListener("timeupdate", updateProgress);
+  video?.addEventListener("seeked", updateProgress);
+  video?.addEventListener("loadedmetadata", updateProgress);
 
   updatePlay();
-  updateTimer();
+  updateProgress();
 </script>
