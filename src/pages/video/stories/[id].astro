@@ -58,6 +58,23 @@ const { story } = Astro.props;
     </div>
 
 
+    <!-- FULLSCREEN — ABOVE EXPLANATION BUTTON -->
+    <button
+      id="fullscreen-button"
+      class="fullscreen-button"
+      type="button"
+      aria-label="Enter fullscreen"
+      title="Fullscreen"
+    >
+      <svg class="expand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" aria-hidden="true">
+        <path d="M9 3H3v6 M15 3h6v6 M3 15v6h6 M21 15v6h-6" />
+      </svg>
+      <svg class="shrink-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" aria-hidden="true">
+        <path d="M3 9h6V3 M21 9h-6V3 M3 15h6v6 M21 15h-6v6" />
+      </svg>
+    </button>
+
+
     <!-- PLAY / PAUSE — BOTTOM RIGHT -->
     <button
       id="play-button"
@@ -219,6 +236,39 @@ const { story } = Astro.props;
   }
 
 
+  /* FULLSCREEN BUTTON — ABOVE EXPLANATION BUTTON */
+
+  .fullscreen-button {
+    position: fixed;
+    left: clamp(1.5rem, 3vw, 2rem);
+    bottom: calc(clamp(1.5rem, 3vw, 2rem) + 3.5rem);
+    z-index: 50;
+    width: 34px;
+    height: 34px;
+    padding: 4px;
+    border: 0;
+    background: transparent;
+    color: white;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+  }
+
+  .fullscreen-button svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .fullscreen-button .shrink-icon { display: none; }
+  .fullscreen-button.active .expand-icon { display: none; }
+  .fullscreen-button.active .shrink-icon { display: block; }
+
+  .fullscreen-button:focus-visible {
+    outline: 1px solid white;
+    outline-offset: 3px;
+  }
+
+
   /* PLAY BUTTON — LOCKED BOTTOM RIGHT */
 
   .play-button {
@@ -376,6 +426,51 @@ const { story } = Astro.props;
       open ? "false" : "true"
     );
   });
+
+
+  /* FULLSCREEN */
+
+  const fullscreenButton = document.querySelector("#fullscreen-button");
+  const viewer = document.querySelector(".story-viewer");
+
+  function updateFullscreenButton() {
+    if (!(fullscreenButton instanceof HTMLButtonElement)) return;
+    const active = Boolean(document.fullscreenElement);
+    fullscreenButton.classList.toggle("active", active);
+    fullscreenButton.setAttribute(
+      "aria-label",
+      active ? "Exit fullscreen" : "Enter fullscreen"
+    );
+    fullscreenButton.title = active ? "Exit fullscreen" : "Fullscreen";
+  }
+
+  fullscreenButton?.addEventListener("click", async () => {
+    if (!(viewer instanceof HTMLElement)) return;
+
+    if (document.fullscreenElement) {
+      try { await document.exitFullscreen(); } catch {}
+      return;
+    }
+
+    if (typeof viewer.requestFullscreen === "function") {
+      try {
+        await viewer.requestFullscreen();
+        return;
+      } catch {}
+    }
+
+    // iPhone Safari may only allow native fullscreen for video.
+    if (video instanceof HTMLVideoElement) {
+      const nativeVideo = video as HTMLVideoElement & {
+        webkitEnterFullscreen?: () => void;
+      };
+      if (typeof nativeVideo.webkitEnterFullscreen === "function") {
+        try { nativeVideo.webkitEnterFullscreen(); } catch {}
+      }
+    }
+  });
+
+  document.addEventListener("fullscreenchange", updateFullscreenButton);
 
 
   /* VIDEO PROGRESS */
