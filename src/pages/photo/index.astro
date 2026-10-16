@@ -109,6 +109,22 @@ const photos = [
         + - 
     </button>
 
+      <!-- FULLSCREEN — ABOVE DESCRIPTION BUTTON -->
+      <button
+        id="fullscreen-button"
+        class="fullscreen-button"
+        type="button"
+        aria-label="Enter fullscreen"
+        title="Fullscreen"
+      >
+        <svg class="expand-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M8 3H3v5 M16 3h5v5 M3 16v5h5 M21 16v5h-5" />
+        </svg>
+        <svg class="shrink-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 8h5V3 M21 8h-5V3 M3 16h5v5 M21 16h-5v5" />
+        </svg>
+      </button>
+
       <div id="description-panel" class="description-panel">
         <p id="viewer-description"></p>
       </div>
@@ -226,6 +242,39 @@ const photos = [
   cursor: pointer;
 }
 
+  /* FULLSCREEN BUTTON — BOTTOM LEFT, ABOVE + */
+  .fullscreen-button {
+    position: absolute;
+    left: 2rem;
+    bottom: 5rem;
+    z-index: 200;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: white;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+  }
+
+  .fullscreen-button svg {
+    width: 24px;
+    height: 24px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: square;
+    stroke-linejoin: miter;
+  }
+
+  .fullscreen-button .shrink-icon { display: none; }
+  .fullscreen-button.is-fullscreen .expand-icon { display: none; }
+  .fullscreen-button.is-fullscreen .shrink-icon { display: block; }
+
+  .fullscreen-button:focus-visible { outline: 1px solid white; outline-offset: 4px; }
+
   .description-panel {
     position: absolute;
     bottom: 5rem;
@@ -283,6 +332,13 @@ const photos = [
     line-height: 1;
   }
 
+   .fullscreen-button {
+     left: 1.5rem;
+     bottom: 4.5rem;
+     width: 26px;
+     height: 26px;
+   }
+
   /* Description stays inside mobile viewport */
   .description-panel {
     position: fixed;
@@ -321,6 +377,32 @@ const photos = [
   const dimeButton = document.getElementById("dime-button");
   const backButton = document.getElementById("back-to-collage");
   const photoCards = document.querySelectorAll(".photo-card");
+   const fullscreenButton = document.getElementById("fullscreen-button");
+
+   function updateFullscreenButton() {
+     if (!(fullscreenButton instanceof HTMLButtonElement)) return;
+     const active = document.fullscreenElement === viewer;
+     fullscreenButton.classList.toggle("is-fullscreen", active);
+     fullscreenButton.setAttribute("aria-label", active ? "Exit fullscreen" : "Enter fullscreen");
+     fullscreenButton.title = active ? "Exit fullscreen" : "Fullscreen";
+   }
+
+   fullscreenButton?.addEventListener("click", async () => {
+     if (!(viewer instanceof HTMLElement)) return;
+     try {
+       if (document.fullscreenElement === viewer) {
+         await document.exitFullscreen();
+       } else if (viewer.requestFullscreen) {
+         await viewer.requestFullscreen();
+       }
+     } catch (error) {
+       console.warn("Fullscreen is not supported in this browser.", error);
+     }
+     updateFullscreenButton();
+   });
+
+   document.addEventListener("fullscreenchange", updateFullscreenButton);
+
 
   photoCards.forEach((card) => {
     card.addEventListener("click", () => {
@@ -356,7 +438,10 @@ const photos = [
   }
 });
 
-  backButton?.addEventListener("click", () => {
+   backButton?.addEventListener("click", async () => {
+     if (document.fullscreenElement === viewer) {
+       try { await document.exitFullscreen(); } catch {}
+     }
     viewer?.classList.remove("open");
     viewer?.setAttribute("aria-hidden", "true");
     descriptionPanel?.classList.remove("visible");
